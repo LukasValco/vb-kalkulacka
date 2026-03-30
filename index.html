@@ -1,0 +1,455 @@
+<!doctype html>
+<html lang="cs">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kalkulačka Virtuální baterie | E.ON srovnání</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="container">
+      <header class="hero card">
+        <p class="eyebrow">E.ON | Virtuální baterie+</p>
+        <h1>Kalkulačka přínosu: Virtuální baterie vs. Virtuální baterie+ vs. čistý výkup</h1>
+        <p>
+          Posuvníky níže simulují vaši situaci. Pásmo služby se přiřadí
+          automaticky podle ročního přetoku do sítě.
+        </p>
+        <div class="example-card">
+          <h3>Ukázkový rezidenční systém (předvyplněný vzor)</h3>
+          <p>
+            FVE <strong>8,3 kWp</strong>, baterie <strong>11,6 kWh</strong>,
+            výroba <strong>6 165,2 kWh</strong>, přetok do sítě
+            <strong>4 258,3 kWh</strong>, odběr ze sítě
+            <strong>4 000,12 kWh</strong>.
+          </p>
+          <p class="small-note">
+            Vzor nastaví kalkulačku automaticky. Hodnoty pak můžete libovolně
+            upravit podle konkrétního zákazníka.
+          </p>
+          <button id="loadExampleBtn" type="button" class="primary-btn">
+            Načíst ukázkový systém
+          </button>
+        </div>
+      </header>
+
+      <section class="card">
+        <h2>1) Nastavte vstupy</h2>
+        <p class="intro-help">
+          Posuňte jezdce nebo napište hodnotu ručně do políčka vpravo. Kalkulačka
+          vše průběžně přepočítává.
+        </p>
+        <div class="mode-switch" role="group" aria-label="Režim kalkulačky">
+          <button id="simpleModeBtn" type="button" class="mode-btn active">
+            Jednoduchý režim
+          </button>
+          <button id="advancedModeBtn" type="button" class="mode-btn">
+            Pokročilý režim
+          </button>
+        </div>
+        <form id="calcForm" class="form-grid" novalidate>
+          <div class="slider-group">
+            <label for="overflowEnergy">
+              Kolik elektřiny za rok přeteče do sítě (MWh)
+              <span class="tip-wrap">
+                <button type="button" class="tip-btn" aria-label="Nápověda k přetoku">?</button>
+                <span class="tooltip">Roční součet energie, kterou nevyužijete doma a odejde do sítě.</span>
+              </span>
+              <span id="overflowEnergyValue" class="value-badge">2,00 MWh</span>
+            </label>
+            <div class="input-row">
+              <input
+                id="overflowEnergy"
+                name="overflowEnergy"
+                type="range"
+                min="0"
+                max="8"
+                step="0.01"
+                value="4.2583"
+              />
+              <input
+                id="overflowEnergyNumber"
+                type="number"
+                min="0"
+                max="8"
+                step="0.01"
+                value="4.2583"
+              />
+            </div>
+            <p class="input-help">
+              Podle této hodnoty se v daném solárním roce určí pásmo služby.
+            </p>
+          </div>
+
+          <div class="slider-group">
+            <label for="energyBack">
+              Kolik elektřiny si vezmete zpět z virtuální baterie (MWh)
+              <span class="tip-wrap">
+                <button type="button" class="tip-btn" aria-label="Nápověda k energii zpět">?</button>
+                <span class="tooltip">Množství, které zpětně odeberete z virtuální baterie v daném roce.</span>
+              </span>
+              <span id="energyBackValue" class="value-badge">2,00 MWh</span>
+            </label>
+            <div class="input-row">
+              <input
+                id="energyBack"
+                name="energyBack"
+                type="range"
+                min="0"
+                max="8"
+                step="0.01"
+                value="4"
+              />
+              <input
+                id="energyBackNumber"
+                type="number"
+                min="0"
+                max="8"
+                step="0.01"
+                value="4"
+              />
+            </div>
+            <p class="input-help">
+              Může být vyšší než aktuální roční přetok, pokud čerpáte i převody z
+              minulých solárních roků.
+            </p>
+          </div>
+
+          <div class="slider-group">
+            <label for="pricePower">
+              Cena silové elektřiny (Kč/MWh)
+              <span class="tip-wrap">
+                <button type="button" class="tip-btn" aria-label="Nápověda k ceně silové elektřiny">?</button>
+                <span class="tooltip">Cena silové části elektřiny, ze které se počítá přínos při zpětném odběru.</span>
+              </span>
+              <span id="pricePowerValue" class="value-badge">3 500 Kč/MWh</span>
+            </label>
+            <div class="input-row">
+              <input
+                id="pricePower"
+                name="pricePower"
+                type="range"
+                min="1000"
+                max="10000"
+                step="100"
+                value="3500"
+              />
+              <input
+                id="pricePowerNumber"
+                type="number"
+                min="1000"
+                max="10000"
+                step="100"
+                value="3500"
+              />
+            </div>
+            <p class="input-help">
+              Používá se pro výpočet ročního přínosu u obou variant služby.
+            </p>
+          </div>
+
+          <div class="slider-group">
+            <label for="priceBuyout">
+              Cena čistého výkupu do sítě (Kč/MWh)
+              <span class="tip-wrap">
+                <button type="button" class="tip-btn" aria-label="Nápověda k ceně výkupu">?</button>
+                <span class="tooltip">Cena, za kterou dodavatel vykoupí přebytky, pokud nevyužíváte virtuální baterii.</span>
+              </span>
+              <span id="priceBuyoutValue" class="value-badge">300 Kč/MWh</span>
+            </label>
+            <div class="input-row">
+              <input
+                id="priceBuyout"
+                name="priceBuyout"
+                type="range"
+                min="0"
+                max="4000"
+                step="50"
+                value="300"
+              />
+              <input
+                id="priceBuyoutNumber"
+                type="number"
+                min="0"
+                max="4000"
+                step="50"
+                value="300"
+              />
+            </div>
+            <p class="input-help">
+              Varianta bez služby virtuální baterie: všechnu přetokovou energii pouze prodáváte.
+            </p>
+          </div>
+
+          <div class="slider-group advanced-only">
+            <label for="nextYearOverflow">
+              Přetok v dalším solárním roce (MWh)
+              <span class="tip-wrap">
+                <button type="button" class="tip-btn" aria-label="Nápověda k dalšímu roku">?</button>
+                <span class="tooltip">Pouze pro simulaci: odhad přetoku v následujícím solárním roce.</span>
+              </span>
+              <span id="nextYearOverflowValue" class="value-badge">1,50 MWh</span>
+            </label>
+            <div class="input-row">
+              <input
+                id="nextYearOverflow"
+                name="nextYearOverflow"
+                type="range"
+                min="0"
+                max="8"
+                step="0.01"
+                value="1.5"
+              />
+              <input
+                id="nextYearOverflowNumber"
+                type="number"
+                min="0"
+                max="8"
+                step="0.01"
+                value="1.5"
+              />
+            </div>
+            <p class="input-help">
+              Pro simulaci vývoje balíčku v dalších letech.
+            </p>
+          </div>
+
+          <div class="slider-group advanced-only">
+            <label for="seasonProfile">
+              Sezónní profil přetoků
+              <span class="tip-wrap">
+                <button type="button" class="tip-btn" aria-label="Nápověda k sezónnímu profilu">?</button>
+                <span class="tooltip">Volí, jestli přetok přichází rovnoměrně, nebo více v letních měsících.</span>
+              </span>
+              <span id="seasonProfileValue" class="value-badge">Rovnoměrně</span>
+            </label>
+            <select id="seasonProfile" name="seasonProfile">
+              <option value="uniform">Rovnoměrně během roku</option>
+              <option value="solar">Typická FVE křivka (více léto)</option>
+            </select>
+            <p class="input-help">
+              Ovlivňuje měsíční simulaci navyšování balíčku, ne celkový roční
+              součet.
+            </p>
+          </div>
+        </form>
+
+        <div class="auto-band">
+          <article class="metric-tile">
+            <span>Automaticky přiřazené pásmo</span>
+            <strong id="bandLabel">do 2 MWh</strong>
+          </article>
+          <article class="metric-tile">
+            <span>Měsíční poplatek služby</span>
+            <strong id="bandFee">199 Kč</strong>
+          </article>
+          <article class="metric-tile">
+            <span>Energie využitelná ve virtuální baterii</span>
+            <strong id="usableEnergy">2,00 MWh</strong>
+          </article>
+        </div>
+        <p id="error" class="error" aria-live="polite"></p>
+        <p class="small-note">
+          Čistý výkup se počítá z celého ročního přetoku do sítě.
+        </p>
+      </section>
+
+      <section class="card">
+        <h2>2) Výsledky porovnání</h2>
+        <div id="resultGrid" class="result-grid">
+          <article id="cardVb" class="result-card">
+            <p class="rank-badge" id="rankVb">#2</p>
+            <h3>Virtuální baterie</h3>
+            <p>Měsíční bilance poplatku: <strong id="vbMonthly">-199 Kč</strong></p>
+            <p>Roční přínos: <strong id="vbYearly">0 Kč</strong></p>
+          </article>
+          <article id="cardVbp" class="result-card">
+            <p class="rank-badge" id="rankVbp">#1</p>
+            <h3>Virtuální baterie+</h3>
+            <p>Měsíční bilance po odměně: <strong id="vbpMonthly">+251 Kč</strong></p>
+            <p>Roční přínos: <strong id="vbpYearly">0 Kč</strong></p>
+          </article>
+          <article id="cardBuyout" class="result-card">
+            <p class="rank-badge" id="rankBuyout">#3</p>
+            <h3>Čistý výkup (bez virtuální baterie)</h3>
+            <p>Roční výnos z prodeje: <strong id="buyoutYearly">0 Kč</strong></p>
+            <p class="small-note">Bez poplatku služby a bez odměny za flexibilitu.</p>
+          </article>
+          <article id="cardBest" class="highlight">
+            <h3>Nejlepší varianta</h3>
+            <p><strong id="bestVariant">Virtuální baterie+</strong></p>
+            <p>Rozdíl oproti 2. místu: <strong id="bestDiff">0 Kč/rok</strong></p>
+          </article>
+        </div>
+        <div class="chart-wrap">
+          <h3>Graf ročního přínosu</h3>
+          <div class="bars">
+            <div class="bar-row">
+              <span>Virtuální baterie</span>
+              <div class="bar-track"><div id="vbBar" class="bar vb"></div></div>
+              <strong id="vbBarValue">0 Kč</strong>
+            </div>
+            <div class="bar-row">
+              <span>Virtuální baterie+</span>
+              <div class="bar-track"><div id="vbpBar" class="bar vbp"></div></div>
+              <strong id="vbpBarValue">0 Kč</strong>
+            </div>
+            <div class="bar-row">
+              <span>Výkup</span>
+              <div class="bar-track"><div id="buyoutBar" class="bar buyout"></div></div>
+              <strong id="buyoutBarValue">0 Kč</strong>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>3) Jak kalkulace funguje (jednoduše)</h2>
+        <div class="steps-grid">
+          <article>
+            <h3>1. Určí se pásmo služby</h3>
+            <p>
+              Podle ročního přetoku do sítě se přiřadí pásmo (1/2/3/4 MWh) a
+              měsíční poplatek.
+            </p>
+          </article>
+          <article>
+            <h3>2. Spočítá se hodnota energie zpět</h3>
+            <p>
+              Kolik energie zákazník vybere z virtuální baterie, tolik ušetří na silové složce
+              elektřiny.
+            </p>
+          </article>
+          <article>
+            <h3>3. Přidá se měsíční bilance služby</h3>
+            <p>
+              U Virtuální baterie+ se odměna 450 Kč/měs. započte proti poplatku. U
+              Virtuální baterie se
+              platí plný poplatek.
+            </p>
+          </article>
+          <article>
+            <h3>4. Zohlední se provozní vlivy</h3>
+            <p>
+              Výsledek je konzervativně korigovaný o provozní ztráty během roku.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>4) Důležité podmínky a vysvětlení (disclaimer)</h2>
+        <ul>
+          <li>
+            Solární rok běží od <strong>1. 4. do 31. 3.</strong> a
+            <strong>1. 4. se nuluje kumulativní množství</strong>, podle kterého
+            se určuje pásmo služby.
+          </li>
+          <li>
+            Po sjednání služby začínáte v nejnižším pásmu. Jakmile v průběhu
+            solárního roku překročíte práh pásma, cena balíčku se zvýší
+            <strong>od následujícího měsíce</strong>.
+          </li>
+          <li>
+            V průběhu stejného solárního roku už pásmo neklesá. Do nižšího
+            pásma se dostanete až v novém solárním roce podle nového
+            kumulativního uložení.
+          </li>
+          <li>
+            Uložená energie, kterou nevyužijete, se převádí do dalšího roku a
+            můžete ji čerpat později; proto může být energie zpět i vyšší
+            než letošní přetok.
+          </li>
+        </ul>
+      </section>
+
+      <section class="card advanced-only">
+        <h2>5) Simulace vývoje balíčku (2 solární roky)</h2>
+        <p class="small-note">
+          Model počítá s rovnoměrným rozložením přetoku do 12 měsíců. Navýšení
+          balíčku se aplikuje vždy od následujícího měsíce po překročení pásma.
+        </p>
+        <div class="result-grid">
+          <article>
+            <h3>Rok 1 (po sjednání)</h3>
+            <p>Start balíčku: <strong id="simYear1Start">do 1 MWh</strong></p>
+            <p>Konec roku: <strong id="simYear1End">do 2 MWh</strong></p>
+          </article>
+          <article>
+            <h3>Rok 2</h3>
+            <p>Start balíčku: <strong id="simYear2Start">do 2 MWh</strong></p>
+            <p>Konec roku: <strong id="simYear2End">do 2 MWh</strong></p>
+          </article>
+          <article class="highlight">
+            <h3>Start dalšího roku</h3>
+            <p>
+              Doporučený balíček od 1.4.:
+              <strong id="simYear3Start">do 2 MWh</strong>
+            </p>
+            <p class="small-note">
+              Podle skutečně dosaženého kumulativního množství v roce 2.
+            </p>
+          </article>
+        </div>
+        <div class="table-wrap sim-table">
+          <table>
+            <thead>
+              <tr>
+                <th>Měsíc</th>
+                <th>Rok 1: balíček</th>
+                <th>Rok 1: kumulativně (MWh)</th>
+                <th>Rok 2: balíček</th>
+                <th>Rok 2: kumulativně (MWh)</th>
+              </tr>
+            </thead>
+            <tbody id="simulationTableBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Rychlé srovnání služeb</h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Oblast</th>
+                <th>E.ON Rovnováha</th>
+                <th>Virtuální baterie</th>
+                <th>Virtuální baterie+</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Primární princip</td>
+                <td>Flexibilita / aktivní řízení</td>
+                <td>Započítání přetoků</td>
+                <td>Virtuální baterie + flexibilita</td>
+              </tr>
+              <tr>
+                <td>Řízení zařízení</td>
+                <td>Ano</td>
+                <td>Ne</td>
+                <td>Ano</td>
+              </tr>
+              <tr>
+                <td>Fixní odměna</td>
+                <td>450 Kč/měs.</td>
+                <td>Ne</td>
+                <td>450 Kč/měs.</td>
+              </tr>
+              <tr>
+                <td>Max. virtuální kapacita</td>
+                <td>Neřeší se</td>
+                <td>Až 4 MWh/solární rok</td>
+                <td>Až 4 MWh/solární rok</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <script src="./script.js"></script>
+  </body>
+</html>
