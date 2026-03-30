@@ -2,9 +2,9 @@ const form = document.getElementById("calcForm");
 const loadExampleBtn = document.getElementById("loadExampleBtn");
 const simpleModeBtn = document.getElementById("simpleModeBtn");
 const advancedModeBtn = document.getElementById("advancedModeBtn");
-const advancedOnlyEls = document.querySelectorAll(".advanced-only");
-const simpleOnlyEls = document.querySelectorAll(".simple-only");
 const modeDescriptionEl = document.getElementById("modeDescription");
+const inputsSectionEl = document.getElementById("inputsSection");
+const modeBadgeEl = document.getElementById("modeBadge");
 const overflowEnergyInput = document.getElementById("overflowEnergy");
 const overflowEnergyNumberInput = document.getElementById("overflowEnergyNumber");
 const energyBackInput = document.getElementById("energyBack");
@@ -208,17 +208,29 @@ function syncPair(rangeInput, numberInput) {
 function applyMode(nextMode) {
   mode = nextMode;
   const isAdvanced = mode === "advanced";
-  advancedOnlyEls.forEach((el) => {
+  document.querySelectorAll(".advanced-only").forEach((el) => {
     el.classList.toggle("hidden", !isAdvanced);
   });
-  simpleOnlyEls.forEach((el) => {
+  document.querySelectorAll(".simple-only").forEach((el) => {
     el.classList.toggle("hidden", isAdvanced);
   });
   simpleModeBtn.classList.toggle("active", !isAdvanced);
   advancedModeBtn.classList.toggle("active", isAdvanced);
-  modeDescriptionEl.textContent = isAdvanced
-    ? "Pokročilý režim: detailní rozpad výpočtu, grafy a simulace po měsících."
-    : "Jednoduchý režim: základní vstupy + rychlé výsledky.";
+  simpleModeBtn.setAttribute("aria-pressed", String(!isAdvanced));
+  advancedModeBtn.setAttribute("aria-pressed", String(isAdvanced));
+  if (modeDescriptionEl) {
+    modeDescriptionEl.textContent = isAdvanced
+      ? "Pokročilý režim: detailní rozpad výpočtu, grafy, simulace po měsících a doplňující sekce."
+      : "Jednoduchý režim: jen základní vstupy a souhrnné výsledky — bez grafů a rozpadů.";
+  }
+  if (inputsSectionEl) {
+    inputsSectionEl.dataset.mode = isAdvanced ? "advanced" : "simple";
+  }
+  if (modeBadgeEl) {
+    modeBadgeEl.textContent = isAdvanced ? "Pokročilý režim" : "Jednoduchý režim";
+    modeBadgeEl.classList.toggle("mode-badge--advanced", isAdvanced);
+    modeBadgeEl.classList.toggle("mode-badge--simple", !isAdvanced);
+  }
 }
 
 function setInputPair(rangeInput, numberInput, value) {

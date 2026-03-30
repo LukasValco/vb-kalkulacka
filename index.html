@@ -33,23 +33,29 @@
         </div>
       </header>
 
-      <section class="card">
-        <h2>1) Nastavte vstupy</h2>
+      <section class="card inputs-section-card" id="inputsSection" data-mode="simple">
+        <div class="section-heading-row">
+          <h2>1) Nastavte vstupy</h2>
+          <span class="mode-badge mode-badge--simple" id="modeBadge">Jednoduchý režim</span>
+        </div>
         <p class="intro-help">
           Posuňte jezdce nebo napište hodnotu ručně do políčka vpravo. Kalkulačka
           vše průběžně přepočítává.
         </p>
-        <div class="mode-switch" role="group" aria-label="Režim kalkulačky">
-          <button id="simpleModeBtn" type="button" class="mode-btn active">
-            Jednoduchý režim
-          </button>
-          <button id="advancedModeBtn" type="button" class="mode-btn">
-            Pokročilý režim
-          </button>
+        <div class="mode-panel" role="region" aria-label="Volba režimu zobrazení">
+          <p class="mode-panel-label">Zobrazení kalkulačky</p>
+          <div class="mode-switch" role="group" aria-label="Režim kalkulačky">
+            <button id="simpleModeBtn" type="button" class="mode-btn active" aria-pressed="true">
+              Jednoduchý režim
+            </button>
+            <button id="advancedModeBtn" type="button" class="mode-btn" aria-pressed="false">
+              Pokročilý režim
+            </button>
+          </div>
+          <p id="modeDescription" class="mode-description">
+            Jednoduchý režim: základní vstupy + rychlé výsledky.
+          </p>
         </div>
-        <p id="modeDescription" class="mode-description">
-          Jednoduchý režim: základní vstupy + rychlé výsledky.
-        </p>
         <form id="calcForm" class="form-grid" novalidate>
           <div class="slider-group">
             <label for="overflowEnergy">
