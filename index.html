@@ -47,6 +47,9 @@
             Pokročilý režim
           </button>
         </div>
+        <p id="modeDescription" class="mode-description">
+          Jednoduchý režim: základní vstupy + rychlé výsledky.
+        </p>
         <form id="calcForm" class="form-grid" novalidate>
           <div class="slider-group">
             <label for="overflowEnergy">
@@ -252,6 +255,9 @@
         <p class="small-note">
           Čistý výkup se počítá z celého ročního přetoku do sítě.
         </p>
+        <p class="small-note simple-only">
+          Pro detailní rozpad výpočtu a simulaci po měsících přepněte na Pokročilý režim.
+        </p>
       </section>
 
       <section class="card">
@@ -281,7 +287,7 @@
             <p>Rozdíl oproti 2. místu: <strong id="bestDiff">0 Kč/rok</strong></p>
           </article>
         </div>
-        <div class="chart-wrap">
+        <div class="chart-wrap advanced-only">
           <h3>Graf ročního přínosu</h3>
           <div class="bars">
             <div class="bar-row">
@@ -301,9 +307,41 @@
             </div>
           </div>
         </div>
+        <div class="chart-wrap advanced-only">
+          <h3>Rozbor výpočtu (srozumitelně po položkách)</h3>
+          <div class="breakdown-grid">
+            <article class="breakdown-card">
+              <h4>Virtuální baterie</h4>
+              <p>Hodnota energie zpět: <strong id="vbEnergyValue">0 Kč/rok</strong></p>
+              <p>Měsíční poplatek: <strong id="vbFeeMonthlyDetail">0 Kč/měs.</strong></p>
+              <p>Roční poplatek: <strong id="vbFeeYearlyDetail">0 Kč/rok</strong></p>
+              <p>Odměna za flexibilitu: <strong>0 Kč/měs.</strong></p>
+              <p>Roční korekce provozních vlivů: <strong>-1 200 Kč/rok</strong></p>
+              <p class="breakdown-total">Výsledek: <strong id="vbTotalDetail">0 Kč/rok</strong></p>
+            </article>
+            <article class="breakdown-card">
+              <h4>Virtuální baterie+</h4>
+              <p>Hodnota energie zpět: <strong id="vbpEnergyValue">0 Kč/rok</strong></p>
+              <p>Měsíční poplatek: <strong id="vbpFeeMonthlyDetail">0 Kč/měs.</strong></p>
+              <p>Odměna za flexibilitu: <strong>+450 Kč/měs.</strong></p>
+              <p>Roční bilance (odměna - poplatek): <strong id="vbpBalanceYearlyDetail">0 Kč/rok</strong></p>
+              <p>Roční korekce provozních vlivů: <strong>-1 200 Kč/rok</strong></p>
+              <p class="breakdown-total">Výsledek: <strong id="vbpTotalDetail">0 Kč/rok</strong></p>
+            </article>
+            <article class="breakdown-card">
+              <h4>Čistý výkup</h4>
+              <p>Roční přetok do sítě: <strong id="buyoutOverflowDetail">0 MWh</strong></p>
+              <p>Výkupní cena: <strong id="buyoutPriceDetail">0 Kč/MWh</strong></p>
+              <p>Roční výnos z prodeje: <strong id="buyoutRevenueDetail">0 Kč/rok</strong></p>
+              <p>Měsíční poplatek služby: <strong>0 Kč/měs.</strong></p>
+              <p>Odměna za flexibilitu: <strong>0 Kč/měs.</strong></p>
+              <p class="breakdown-total">Výsledek: <strong id="buyoutTotalDetail">0 Kč/rok</strong></p>
+            </article>
+          </div>
+        </div>
       </section>
 
-      <section class="card">
+      <section class="card advanced-only">
         <h2>3) Jak kalkulace funguje (jednoduše)</h2>
         <div class="steps-grid">
           <article>
@@ -337,7 +375,7 @@
         </div>
       </section>
 
-      <section class="card">
+      <section class="card advanced-only">
         <h2>4) Důležité podmínky a vysvětlení (disclaimer)</h2>
         <ul>
           <li>
@@ -407,7 +445,7 @@
         </div>
       </section>
 
-      <section class="card">
+      <section class="card advanced-only">
         <h2>Rychlé srovnání služeb</h2>
         <div class="table-wrap">
           <table>

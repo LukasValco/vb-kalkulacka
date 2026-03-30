@@ -105,6 +105,12 @@ li {
   border: 1px solid var(--border);
 }
 
+.mode-description {
+  margin: 0 0 12px;
+  font-weight: 600;
+  color: #3c5472;
+}
+
 .mode-btn {
   border: none;
   background: transparent;
@@ -334,6 +340,26 @@ button {
   color: #a70011;
 }
 
+.result-card.rank-1 {
+  border: 2px solid #9fd9b1;
+  background: linear-gradient(180deg, #f3fff7 0%, #ffffff 100%);
+}
+
+.result-card.rank-1 .rank-badge {
+  background: #e7f9ee;
+  border-color: #9fd9b1;
+  color: #116a36;
+}
+
+.result-card.rank-2 {
+  border-color: #cfdcec;
+}
+
+.result-card.rank-3 {
+  border-color: #e3d9d9;
+  background: #fffdfd;
+}
+
 .steps-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -360,6 +386,33 @@ button {
   margin-top: 14px;
   border-top: 1px dashed #cdd9e8;
   padding-top: 12px;
+}
+
+.breakdown-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 12px;
+}
+
+.breakdown-card {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px;
+  background: #f9fcff;
+}
+
+.breakdown-card h4 {
+  margin: 0 0 8px;
+}
+
+.breakdown-card p {
+  margin: 6px 0;
+}
+
+.breakdown-total {
+  border-top: 1px dashed #cdd9e8;
+  padding-top: 8px;
+  margin-top: 8px;
 }
 
 .bars {

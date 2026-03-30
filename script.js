@@ -3,6 +3,8 @@ const loadExampleBtn = document.getElementById("loadExampleBtn");
 const simpleModeBtn = document.getElementById("simpleModeBtn");
 const advancedModeBtn = document.getElementById("advancedModeBtn");
 const advancedOnlyEls = document.querySelectorAll(".advanced-only");
+const simpleOnlyEls = document.querySelectorAll(".simple-only");
+const modeDescriptionEl = document.getElementById("modeDescription");
 const overflowEnergyInput = document.getElementById("overflowEnergy");
 const overflowEnergyNumberInput = document.getElementById("overflowEnergyNumber");
 const energyBackInput = document.getElementById("energyBack");
@@ -45,6 +47,18 @@ const buyoutBarEl = document.getElementById("buyoutBar");
 const vbBarValueEl = document.getElementById("vbBarValue");
 const vbpBarValueEl = document.getElementById("vbpBarValue");
 const buyoutBarValueEl = document.getElementById("buyoutBarValue");
+const vbEnergyValueEl = document.getElementById("vbEnergyValue");
+const vbFeeMonthlyDetailEl = document.getElementById("vbFeeMonthlyDetail");
+const vbFeeYearlyDetailEl = document.getElementById("vbFeeYearlyDetail");
+const vbTotalDetailEl = document.getElementById("vbTotalDetail");
+const vbpEnergyValueEl = document.getElementById("vbpEnergyValue");
+const vbpFeeMonthlyDetailEl = document.getElementById("vbpFeeMonthlyDetail");
+const vbpBalanceYearlyDetailEl = document.getElementById("vbpBalanceYearlyDetail");
+const vbpTotalDetailEl = document.getElementById("vbpTotalDetail");
+const buyoutOverflowDetailEl = document.getElementById("buyoutOverflowDetail");
+const buyoutPriceDetailEl = document.getElementById("buyoutPriceDetail");
+const buyoutRevenueDetailEl = document.getElementById("buyoutRevenueDetail");
+const buyoutTotalDetailEl = document.getElementById("buyoutTotalDetail");
 const simYear1StartEl = document.getElementById("simYear1Start");
 const simYear1EndEl = document.getElementById("simYear1End");
 const simYear2StartEl = document.getElementById("simYear2Start");
@@ -194,8 +208,14 @@ function applyMode(nextMode) {
   advancedOnlyEls.forEach((el) => {
     el.classList.toggle("hidden", !isAdvanced);
   });
+  simpleOnlyEls.forEach((el) => {
+    el.classList.toggle("hidden", isAdvanced);
+  });
   simpleModeBtn.classList.toggle("active", !isAdvanced);
   advancedModeBtn.classList.toggle("active", isAdvanced);
+  modeDescriptionEl.textContent = isAdvanced
+    ? "Pokročilý režim: detailní rozpad výpočtu, grafy a simulace po měsících."
+    : "Jednoduchý režim: základní vstupy + rychlé výsledky.";
 }
 
 function setInputPair(rangeInput, numberInput, value) {
@@ -257,6 +277,9 @@ function calculate() {
 
   const monthlyBalanceVb = -monthlyFee;
   const monthlyBalanceVbp = 450 - monthlyFee;
+  const energyValue = energyBack * pricePower;
+  const yearlyFee = monthlyFee * 12;
+  const yearlyBalanceVbp = monthlyBalanceVbp * 12;
 
   const yearlyVb = energyBack * pricePower + 12 * monthlyBalanceVb - 1200;
   const yearlyVbp = energyBack * pricePower + 12 * monthlyBalanceVbp - 1200;
@@ -280,6 +303,8 @@ function calculate() {
   variants.forEach((item, index) => {
     item.rankEl.textContent = `#${index + 1}`;
     item.rankEl.classList.toggle("top", index === 0);
+    item.el.classList.remove("rank-1", "rank-2", "rank-3");
+    item.el.classList.add(`rank-${index + 1}`);
     item.el.style.order = String(index + 1);
   });
 
@@ -289,6 +314,21 @@ function calculate() {
   vbBarValueEl.textContent = formatCurrency(yearlyVb);
   vbpBarValueEl.textContent = formatCurrency(yearlyVbp);
   buyoutBarValueEl.textContent = formatCurrency(yearlyBuyout);
+
+  vbEnergyValueEl.textContent = `${formatCurrency(energyValue)}/rok`;
+  vbFeeMonthlyDetailEl.textContent = `${formatCurrency(-monthlyFee)}/měs.`;
+  vbFeeYearlyDetailEl.textContent = `${formatCurrency(-yearlyFee)}/rok`;
+  vbTotalDetailEl.textContent = `${formatCurrency(yearlyVb)}/rok`;
+
+  vbpEnergyValueEl.textContent = `${formatCurrency(energyValue)}/rok`;
+  vbpFeeMonthlyDetailEl.textContent = `${formatCurrency(-monthlyFee)}/měs.`;
+  vbpBalanceYearlyDetailEl.textContent = `${formatCurrency(yearlyBalanceVbp)}/rok`;
+  vbpTotalDetailEl.textContent = `${formatCurrency(yearlyVbp)}/rok`;
+
+  buyoutOverflowDetailEl.textContent = `${formatMWh(overflowEnergy)} MWh`;
+  buyoutPriceDetailEl.textContent = `${formatCurrency(priceBuyout).replace(",00", "")}/MWh`;
+  buyoutRevenueDetailEl.textContent = `${formatCurrency(yearlyBuyout)}/rok`;
+  buyoutTotalDetailEl.textContent = `${formatCurrency(yearlyBuyout)}/rok`;
 
   const maxAbs = Math.max(
     Math.abs(yearlyVb),
