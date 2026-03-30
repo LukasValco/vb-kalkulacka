@@ -281,11 +281,18 @@
             <p>Roční výnos z prodeje: <strong id="buyoutYearly">0 Kč</strong></p>
             <p class="small-note">Bez poplatku služby a bez odměny za flexibilitu.</p>
           </article>
-          <article id="cardBest" class="highlight">
-            <h3>Nejlepší varianta</h3>
-            <p><strong id="bestVariant">Virtuální baterie+</strong></p>
+        </div>
+        <div class="best-summary">
+          <div>
+            <p class="best-kicker">Doporučení kalkulačky</p>
+            <h3 id="bestVariant">Virtuální baterie+</h3>
+            <p id="bestReason" class="small-note">
+              Nejvýhodnější varianta podle aktuálně zadaných hodnot.
+            </p>
+          </div>
+          <div class="best-metrics">
             <p>Rozdíl oproti 2. místu: <strong id="bestDiff">0 Kč/rok</strong></p>
-          </article>
+          </div>
         </div>
         <div class="chart-wrap advanced-only">
           <h3>Graf ročního přínosu</h3>
@@ -485,6 +492,23 @@
             </tbody>
           </table>
         </div>
+      </section>
+
+      <section class="card">
+        <h2>Šablona odpovědi zákazníkovi</h2>
+        <p class="small-note">
+          Připravený text pro obsluhu. Stačí zkopírovat, případně doplnit oslovení a detaily.
+        </p>
+        <div class="template-actions">
+          <button id="copyResponseBtn" type="button" class="primary-btn">Kopírovat šablonu</button>
+          <span id="copyResponseStatus" class="small-note"></span>
+        </div>
+        <textarea
+          id="customerResponseTemplate"
+          class="response-template"
+          rows="14"
+          readonly
+        ></textarea>
       </section>
     </main>
 

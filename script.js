@@ -29,10 +29,12 @@ const usableEnergyEl = document.getElementById("usableEnergy");
 const cardVbEl = document.getElementById("cardVb");
 const cardVbpEl = document.getElementById("cardVbp");
 const cardBuyoutEl = document.getElementById("cardBuyout");
-const cardBestEl = document.getElementById("cardBest");
 const rankVbEl = document.getElementById("rankVb");
 const rankVbpEl = document.getElementById("rankVbp");
 const rankBuyoutEl = document.getElementById("rankBuyout");
+const copyResponseBtn = document.getElementById("copyResponseBtn");
+const copyResponseStatusEl = document.getElementById("copyResponseStatus");
+const customerResponseTemplateEl = document.getElementById("customerResponseTemplate");
 
 const vbMonthlyEl = document.getElementById("vbMonthly");
 const vbYearlyEl = document.getElementById("vbYearly");
@@ -41,6 +43,7 @@ const vbpYearlyEl = document.getElementById("vbpYearly");
 const buyoutYearlyEl = document.getElementById("buyoutYearly");
 const bestVariantEl = document.getElementById("bestVariant");
 const bestDiffEl = document.getElementById("bestDiff");
+const bestReasonEl = document.getElementById("bestReason");
 const vbBarEl = document.getElementById("vbBar");
 const vbpBarEl = document.getElementById("vbpBar");
 const buyoutBarEl = document.getElementById("buyoutBar");
@@ -235,6 +238,64 @@ function loadExamplePreset() {
   calculate();
 }
 
+function buildCustomerResponseTemplate(data) {
+  const {
+    bestName,
+    bestValue,
+    secondName,
+    diffToSecond,
+    overflowEnergy,
+    energyBack,
+    monthlyFee,
+    monthlyBalanceVbp,
+    yearlyVb,
+    yearlyVbp,
+    yearlyBuyout,
+  } = data;
+
+  const recommendationText =
+    bestName === "Virtuální baterie+"
+      ? "Doporučená varianta je Virtuální baterie+, protože kombinuje využití přetoků a odměnu za flexibilitu."
+      : bestName === "Virtuální baterie"
+      ? "Doporučená varianta je Virtuální baterie, protože v tomto nastavení vychází nejlépe."
+      : "Doporučená varianta je čistý výkup, protože v tomto nastavení vychází nejlépe.";
+
+  return `Dobrý den,
+
+na základě zadaných údajů jsme pro Vás připravili srovnání variant:
+
+- Roční přetok do sítě: ${formatMWh(overflowEnergy)} MWh
+- Energie čerpaná zpět z virtuální baterie: ${formatMWh(energyBack)} MWh
+- Měsíční poplatek služby (dle pásma): ${formatCurrency(monthlyFee)}
+- Odměna za flexibilitu u Virtuální baterie+: ${formatCurrency(450)}/měs.
+- Měsíční bilance u Virtuální baterie+: ${formatCurrency(monthlyBalanceVbp)}/měs.
+
+Roční výsledek variant:
+- Virtuální baterie: ${formatCurrency(yearlyVb)}
+- Virtuální baterie+: ${formatCurrency(yearlyVbp)}
+- Čistý výkup: ${formatCurrency(yearlyBuyout)}
+
+${recommendationText}
+Nejvýhodnější vychází: ${bestName} (${formatCurrency(bestValue)} / rok), což je o ${formatCurrency(
+    diffToSecond
+  )} více než druhá nejlepší varianta (${secondName}).
+
+Poznámka:
+Výpočet je orientační a pracuje s aktuálně zadanými vstupy. V průběhu solárního roku se může měnit pásmo služby podle kumulativně uložené energie.
+
+S pozdravem
+E.ON tým`;
+}
+
+async function copyCustomerTemplate() {
+  try {
+    await navigator.clipboard.writeText(customerResponseTemplateEl.value);
+    copyResponseStatusEl.textContent = "Zkopírováno.";
+  } catch (error) {
+    copyResponseStatusEl.textContent = "Kopírování se nepovedlo, použijte Ctrl+C.";
+  }
+}
+
 function calculate() {
   const overflowEnergy = Number(overflowEnergyInput.value);
   const energyBack = Number(energyBackInput.value);
@@ -299,6 +360,26 @@ function calculate() {
 
   bestVariantEl.textContent = variants[0].name;
   bestDiffEl.textContent = `${formatCurrency(variants[0].value - variants[1].value)}/rok`;
+  bestReasonEl.textContent =
+    variants[0].name === "Virtuální baterie+"
+      ? "Kombinace využití přetoků a odměny za flexibilitu dává v tomto scénáři nejlepší výsledek."
+      : variants[0].name === "Virtuální baterie"
+      ? "V tomto scénáři vychází nejlépe využití přetoků přes virtuální baterii bez flexibility."
+      : "Při zadaných hodnotách je nejvýhodnější energii přímo prodávat přes čistý výkup.";
+  customerResponseTemplateEl.value = buildCustomerResponseTemplate({
+    bestName: variants[0].name,
+    bestValue: variants[0].value,
+    secondName: variants[1].name,
+    diffToSecond: variants[0].value - variants[1].value,
+    overflowEnergy,
+    energyBack,
+    monthlyFee,
+    monthlyBalanceVbp,
+    yearlyVb,
+    yearlyVbp,
+    yearlyBuyout,
+  });
+  copyResponseStatusEl.textContent = "";
 
   variants.forEach((item, index) => {
     item.rankEl.textContent = `#${index + 1}`;
@@ -307,9 +388,6 @@ function calculate() {
     item.el.classList.add(`rank-${index + 1}`);
     item.el.style.order = String(index + 1);
   });
-
-  // Souhrnova karta je vzdy posledni.
-  cardBestEl.style.order = "4";
 
   vbBarValueEl.textContent = formatCurrency(yearlyVb);
   vbpBarValueEl.textContent = formatCurrency(yearlyVbp);
@@ -390,6 +468,7 @@ seasonProfileInput.addEventListener("change", calculate);
 simpleModeBtn.addEventListener("click", () => applyMode("simple"));
 advancedModeBtn.addEventListener("click", () => applyMode("advanced"));
 loadExampleBtn.addEventListener("click", loadExamplePreset);
+copyResponseBtn.addEventListener("click", copyCustomerTemplate);
 
 applyMode("simple");
 calculate();
