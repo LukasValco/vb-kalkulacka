@@ -204,7 +204,7 @@ function setInputPair(rangeInput, numberInput, value) {
 }
 
 function loadExamplePreset() {
-  setInputPair(overflowEnergyInput, overflowEnergyNumberInput, 4.2583);
+  setInputPair(overflowEnergyInput, overflowEnergyNumberInput, 4.3);
   // Pri ukazkovem systemu pocitame s maximalnim vyuzitim limitu virtualni baterie.
   setInputPair(energyBackInput, energyBackNumberInput, 4);
   setInputPair(pricePowerInput, pricePowerNumberInput, 3500);
