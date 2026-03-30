@@ -95,7 +95,11 @@
               Kolik elektřiny si vezmete zpět z virtuální baterie (MWh)
               <span class="tip-wrap">
                 <button type="button" class="tip-btn" aria-label="Nápověda k energii zpět">?</button>
-                <span class="tooltip">Množství, které zpětně odeberete z virtuální baterie v daném roce.</span>
+                <span class="tooltip">
+                  Kolik elektřiny v tomto solárním roce odeberete ze sítě jako „čerpání z virtuální baterie“.
+                  Model počítá s limitem 4 MWh za rok (stejně jako maximum uložení do VB). Výjimečně lze v praxi
+                  čerpat i převody z minulých let — pro roční odhad úspory to většinou neřešíme.
+                </span>
               </span>
               <span id="energyBackValue" class="value-badge">2,00 MWh</span>
             </label>
@@ -105,7 +109,7 @@
                 name="energyBack"
                 type="range"
                 min="0"
-                max="8"
+                max="4"
                 step="0.01"
                 value="4"
               />
@@ -113,14 +117,14 @@
                 id="energyBackNumber"
                 type="number"
                 min="0"
-                max="8"
+                max="4"
                 step="0.01"
                 value="4"
               />
             </div>
             <p class="input-help">
-              Může být vyšší než aktuální roční přetok, pokud čerpáte i převody z
-              minulých solárních roků.
+              Maximum 4 MWh za solární rok — odpovídá stropu uložení do virtuální baterie. Hodnota může být nižší
+              než přetok; nemusí se rovnat ročnímu přetoku do sítě.
             </p>
           </div>
 
@@ -408,8 +412,9 @@
           </li>
           <li>
             Uložená energie, kterou nevyužijete, se převádí do dalšího roku a
-            můžete ji čerpat později; proto může být energie zpět i vyšší
-            než letošní přetok.
+            můžete ji čerpat později. Tato kalkulačka pro roční odhad úspory
+            uvažuje <strong>nejviše 4 MWh čerpání zpět za jeden solární rok</strong>
+            (stejný strop jako u uložení do VB).
           </li>
         </ul>
       </section>

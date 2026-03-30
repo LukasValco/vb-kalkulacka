@@ -175,8 +175,8 @@ function validateInputs(
   if (pricePower < 0 || priceBuyout < 0) {
     return "Cena energie nemůže být záporná.";
   }
-  if (energyBack < 0 || energyBack > 8) {
-    return "Energie zpět musí být v rozsahu 0 až 8 MWh.";
+  if (energyBack < 0 || energyBack > 4) {
+    return "Energie zpět musí být v rozsahu 0 až 4 MWh (limit VB za solární rok).";
   }
   if (nextYearOverflow < 0 || nextYearOverflow > 8) {
     return "Přetok v dalším roce musí být v rozsahu 0 až 8 MWh.";
@@ -434,11 +434,6 @@ function calculate() {
   if (overflowEnergy > 4) {
     notices.push(
       "Pro pásmo služby se v rámci jednoho solárního roku počítá maximum 4 MWh uložené energie."
-    );
-  }
-  if (energyBack > 4) {
-    notices.push(
-      "Energie zpět nad 4 MWh je možné, pokud čerpáte i převody nevyužité energie z minulých solárních roků."
     );
   }
   if (notices.length > 0) {
